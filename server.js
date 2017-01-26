@@ -35,7 +35,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage }).single('image');
 
-var url = 'http://jollycards.dokku.adrianchifor.com';
+var url = 'https://jollycards.adrianchifor.com';
 var uploadToken = 'G9qIw6rb0Zo5325r8irkCBV6Gku874';
 
 app.use('/', express.static(__dirname + '/pages'));
