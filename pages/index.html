@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+	<head>
+		<title>JollyCards</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,300" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+		<link rel="stylesheet" href="./css/material-photo-gallery.css">
+
+		<style>
+			body {
+                background-image: url("./images/geometry2.png");
+                background-repeat: repeat;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				text-align: center;
+				font-family: 'Roboto Mono';
+			}
+
+			h2 {
+				font-weight: 400;
+				margin: 4vh 4vw;
+                padding-top: 100px;
+				letter-spacing: 3px;
+				color: black;
+			}
+
+            h3 {
+				font-weight: 300;
+				margin: 4vh 4vw;
+                padding-bottom: 80px;
+				color: black;
+			}
+
+			button {
+				margin: 0 2.5px 4vh 2.5px;
+				text-decoration: none;
+				color: grey;
+				padding: 15px;
+				line-height: 1;
+				min-width: 120px;
+				background: rgba(255,255,255, 0.03);
+				border-radius: 6px;
+			}
+
+            input {
+				margin: 0 2.5px 4vh 2.5px;
+				text-decoration: none;
+				color: grey;
+				padding: 15px;
+				line-height: 1;
+                text-align: center;
+				min-width: 280px;
+				background: rgba(255,255,255, 0.03);
+				border-radius: 6px;
+            }
+
+			button:hover {
+				background: rgba(0,0,0, 0.03);
+			}
+
+            input:hover {
+				background: rgba(0,0,0, 0.03);
+			}
+		</style>
+	</head>
+	<body>
+		<h2>JollyCards</h2>
+        <h3>Making special events extra special.</h3>
+		<form onsubmit="return create();">
+			<input id="eventName" placeholder="Event (e.g. Tom's Birthday)" required="">
+			<button id="createEvent">Create</button>
+		</form>
+
+		<script>
+			function create() {
+                window.location.href = "/" + document.getElementById('eventName').value.replace(/\s/g, '+');
+                return false;
+            }
+		</script>
+	</body>
+</html>
