@@ -3,12 +3,12 @@
 	<head>
 		<title>JollyCards</title>
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,300" rel="stylesheet" type="text/css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-		<link rel="stylesheet" href="./css/material-photo-gallery.css">
 
 		<style>
 			body {
-                background-image: url("./images/geometry2.png");
+                background-image: url("https://s3-eu-west-1.amazonaws.com/jollycards-static/geometry2.png");
                 background-repeat: repeat;
 				-webkit-font-smoothing: antialiased;
 				-moz-osx-font-smoothing: grayscale;
@@ -65,7 +65,7 @@
 	</head>
 	<body>
 		<h2>JollyCards</h2>
-        <h3>Making special events extra special.</h3>
+        <h3>Special event eCards, made simple.</h3>
 		<form onsubmit="return create();">
 			<input id="eventName" placeholder="Event (e.g. Tom's Birthday)" required="">
 			<button id="createEvent">Create</button>
@@ -73,7 +73,17 @@
 
 		<script>
 			function create() {
-                window.location.href = "/" + document.getElementById('eventName').value.replace(/\s/g, '+');
+				var eventName = document.getElementById('eventName').value;
+				$.post("/api/event/new", { "eventName": eventName },
+					function(data) {
+						if (data.status == 200) {
+							window.location.href = "/" + data.eventId;
+						} else {
+							alert("Oups! Failed to create new event. Please try again later or contact us at info@jolly.cards");
+						}
+					}
+				);
+
                 return false;
             }
 		</script>
