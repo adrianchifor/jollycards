@@ -29,9 +29,9 @@ var upload = multer({
         s3: new aws.S3({
             accessKeyId: process.env.AWS_AK,
             secretAccessKey: process.env.AWS_SK,
-            region: "eu-west-1"
+            region: process.env.AWS_S3_REGION
         }),
-        bucket: 'jollycards-static',
+        bucket: process.env.AWS_S3_BUCKET,
         acl: 'public-read',
         key: function (req, file, cb) {
             var key = req.params.eventId + imagesSuffix;
@@ -48,7 +48,7 @@ var upload = multer({
     })
 }).single('image');
 
-var s3url = 'https://s3-eu-west-1.amazonaws.com/jollycards-static/';
+var s3url = "https://s3-" + process.env.AWS_S3_REGION + ".amazonaws.com/" + process.env.AWS_S3_BUCKET + "/";
 
 app.get('/', function(req, res) {
     res.writeHead(200, {'Content-Type': 'text/html'});
