@@ -50,16 +50,28 @@
 	</head>
 	<body>
 		<h2><%= event %></h2>
-		<button id="done">Done</button>
+		<button id="done" onclick="return done();">Done</button>
         <div id="canvas"></div>
 
 		<script>
             var board = new DrawingBoard.Board('canvas');
 
-			$("done").click(function(event) {
+            function dataURLtoBlob(dataurl) {
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+
+                return new Blob([u8arr], {type:mime});
+            }
+
+            function done() {
                 var img = board.getImg();
+                var imgBlob = dataURLtoBlob(img);
                 var formData = new FormData();
-                formData.append('image', img);
+                formData.append('image', imgBlob);
 
                 $.ajax({
                     url: '/api/event/upload/<%= eventId %>',
@@ -71,16 +83,16 @@
                         if (result.status == 200) {
                             window.location.href = "/" + "<%= eventId %>";
                         } else {
-                            alert("something failed");
-                            console.log(result);
+                            alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
                         }
                     },
                     error: function (error) {
-                        alert("something failed");
-                        console.log(error);
+                        alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
                     }
                 });
-			});
+
+                return false;
+            }
 		</script>
 	</body>
 </html>

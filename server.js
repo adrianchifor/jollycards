@@ -10,6 +10,7 @@ var uuid = require('uuid/v4');
 
 var app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /* Redis struct: {
     <uuid/v4>_title: "Tom's Birthday"
@@ -20,8 +21,8 @@ var titleSuffix = "_title";
 var imagesSuffix = "_images";
 
 var indexPage = ejs.compile(fs.readFileSync(__dirname + '/pages/index.html', 'utf-8'));
-var galleryPage = ejs.compile(fs.readFileSync('pages/gallery.html', 'utf-8'));
-var newPage = ejs.compile(fs.readFileSync('pages/new.html', 'utf-8'));
+var galleryPage = ejs.compile(fs.readFileSync(__dirname + '/pages/gallery.html', 'utf-8'));
+var newPage = ejs.compile(fs.readFileSync(__dirname + '/pages/new.html', 'utf-8'));
 
 var upload = multer({
     storage: multerS3({
@@ -33,8 +34,10 @@ var upload = multer({
         bucket: 'jollycards-static',
         acl: 'public-read',
         key: function (req, file, cb) {
+            var key = req.params.eventId + imagesSuffix;
             var imageName = uuid() + ".png";
-            redis.rpush(req.params.eventId + imagesSuffix, imageName, function(err, reply) {
+
+            redis.sadd([key, imageName], function(err, reply) {
                 if (err) {
                     console.error(err);
                 }
@@ -53,14 +56,21 @@ app.get('/', function(req, res) {
 });
 
 app.get('/:eventId', function(req, res) {
-    redis.get(req.params.eventId + titleSuffix, function(err, title) {
+    var keyTitle = req.params.eventId + titleSuffix;
+    var keyImages = req.params.eventId + imagesSuffix;
+
+    redis.get(keyTitle, function(err, title) {
         if (title) {
-            redis.get(req.params.eventId + imagesSuffix, function(err, values) {
+            redis.smembers(keyImages, function(err, values) {
                 var images = '';
 
                 if (values) {
                     for (var i = 0; i < values.length; i++) {
-                        images += "<img src=\"" + s3url + values[i] + "\" class=\"m-p-g__thumbs-img\" />\n";
+                        images += s3url + values[i];
+
+                        if (i < values.length - 1) {
+                            images += ",";
+                        }
                     }
                 }
 
@@ -74,7 +84,8 @@ app.get('/:eventId', function(req, res) {
 });
 
 app.get('/:eventId/new', function(req, res) {
-    redis.get(req.params.eventId + titleSuffix, function(err, title) {
+    var key = req.params.eventId + titleSuffix;
+    redis.get(key, function(err, title) {
         if (title) {
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.end(newPage({ event: title, eventId: req.params.eventId }));
@@ -90,35 +101,30 @@ app.get('/:eventId/new', function(req, res) {
 app.post('/api/event/new', function(req, res) {
     if (req.body.eventName) {
         var eventId = uuid();
-        var images = [];
-        redis.set(eventId + titleSuffix, req.body.eventName, function(err, reploy) {
+        var key = eventId + titleSuffix;
+
+        redis.set(key, req.body.eventName, function(err, reploy) {
             if (err) {
-                res.status(500).json({ message: 'Internal Error' });
+                console.error(err);
+                res.status(500).json({ status: 500, message: 'Internal Error' });
                 return;
             }
 
-            redis.set(eventId + imagesSuffix, images, function(err, reply) {
-                if (err) {
-                    res.status(500).json({ message: 'Internal Error' });
-                    return;
-                }
-
-                res.status(200).json({ message: 'Success', eventId: eventId });
-            });
+            res.status(200).json({ status: 200, message: 'Success', eventId: eventId });
         });
     } else {
-        res.status(400).json({ message: 'Bad Request' });
+        res.status(400).json({ status: 400, message: 'Bad Request' });
     }
 });
 
 app.post('/api/event/upload/:eventId', function(req, res) {
     upload(req, res, function(err) {
         if (err) {
-            res.status(500).json({ message: 'Internal Error' });
+            res.status(500).json({ status: 500, message: 'Internal Error' });
             return;
         }
 
-        res.status(200).json({ message: 'Success' });
+        res.status(200).json({ status: 200, message: 'Success' });
     });
 });
 

@@ -3,7 +3,6 @@
 	<head>
 		<title>JollyCards</title>
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,300" rel="stylesheet" type="text/css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="https://cdn.rawgit.com/adrianchifor/material-photo-gallery/master/dist/js/material-photo-gallery.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
 		<link rel="stylesheet" href="https://cdn.rawgit.com/adrianchifor/material-photo-gallery/master/dist/css/material-photo-gallery.css">
@@ -43,26 +42,44 @@
 	</head>
 	<body>
 		<h2><%= event %></h2>
-		<button id="add">Add</button>
+		<button id="add" onclick="return add();">Add</button>
 
 		<div class="m-p-g">
-			<div class="m-p-g__thumbs" data-google-image-layout data-max-height="350">
-				<%= images %>
+			<div id="gallery" class="m-p-g__thumbs" data-google-image-layout data-max-height="350">
+
 			</div>
 
 			<div class="m-p-g__fullscreen"></div>
 		</div>
 
 		<script>
-			var mpgElem = document.querySelector('.m-p-g');
-
 			document.addEventListener('DOMContentLoaded', function() {
-				var gallery = new MaterialPhotoGallery(mpgElem);
+				var imagesStr = "<%= images %>";
+				var images = [];
+
+				if (imagesStr != "") {
+					images = imagesStr.split(",");
+
+					for (var i = 0; i < images.length; i++) {
+						appendImg(images[i]);
+					}
+				}
+
+				var gallery = new MaterialPhotoGallery(document.querySelector('.m-p-g'));
 			});
 
-			$("add").click(function(event) {
+			function add() {
 				window.location.href = window.location.href + "/new";
-			});
+				return false;
+			}
+
+			function appendImg(src) {
+				var elem = document.createElement("img");
+				elem.setAttribute("src", src);
+				elem.setAttribute("data-full", src);
+				elem.setAttribute("class", "m-p-g__thumbs-img");
+				document.getElementById("gallery").appendChild(elem);
+			}
 		</script>
 	</body>
 </html>
