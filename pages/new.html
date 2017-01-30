@@ -54,7 +54,15 @@
         <div id="canvas"></div>
 
 		<script>
-            var board = new DrawingBoard.Board('canvas');
+            var board = new DrawingBoard.Board('canvas', {
+                controls: [
+                    'Color',
+            		'DrawingMode',
+                    { Size: { type: 'dropdown' } },
+            		'Navigation',
+            		'Download'
+                ]
+            });
 
             function dataURLtoBlob(dataurl) {
                 var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
