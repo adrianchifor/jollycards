@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 /* Redis struct: {
     <uuid/v4>_title: "Tom's Birthday"
-    <uuid/v4_images: ["<uuid/v4>", "<uuid/v4>"]
+    <uuid/v4>_images: ["<uuid/v4>", "<uuid/v4>"]
 } */
 var redis = redisLib.createClient(process.env.REDIS_URL);
 var titleSuffix = "_title";
