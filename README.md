@@ -1,4 +1,4 @@
-#[JollyCards](https://jolly.cards)
+# [JollyCards](https://jolly.cards)
 
 A free, online alternative to physical birthday/special occasion cards.
 
@@ -13,7 +13,7 @@ Example Redis entry for a page:
 ]
 ```
 
-##Env vars
+## Env vars
 ```
 REDIS_URL (if using dokku, will be automatically set when linking with Redis service)
 AWS_AK (AWS access key for S3 access)
@@ -23,7 +23,7 @@ AWS_S3_BUCKET
 PORT (optional, not required if using dokku, defaults to 8080)
 ```
 
-##Run
+## Run
 
 Local (don't forget to set env vars):
 `npm install && npm start`
