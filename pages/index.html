@@ -9,8 +9,8 @@
 
 		<style>
 			body {
-                background-image: url("https://s3-eu-west-1.amazonaws.com/jollycards/geometry2.png");
-                background-repeat: repeat;
+				background-image: url("https://s3-eu-west-1.amazonaws.com/jollycards/geometry2.png");
+				background-repeat: repeat;
 				-webkit-font-smoothing: antialiased;
 				-moz-osx-font-smoothing: grayscale;
 				text-align: center;
@@ -20,15 +20,15 @@
 			h2 {
 				font-weight: 400;
 				margin: 4vh 4vw;
-                padding-top: 100px;
+				padding-top: 100px;
 				letter-spacing: 3px;
 				color: black;
 			}
 
-            h3 {
+			h3 {
 				font-weight: 300;
 				margin: 4vh 4vw;
-                padding-bottom: 80px;
+				padding-bottom: 80px;
 				color: black;
 			}
 
@@ -43,30 +43,31 @@
 				border-radius: 6px;
 			}
 
-            input {
+			input {
 				margin: 0 2.5px 4vh 2.5px;
 				text-decoration: none;
 				color: grey;
 				padding: 15px;
 				line-height: 1;
-                text-align: center;
+				text-align: center;
 				min-width: 280px;
 				background: rgba(255,255,255, 0.03);
 				border-radius: 6px;
-            }
+			}
 
 			button:hover {
 				background: rgba(0,0,0, 0.03);
 			}
 
-            input:hover {
+			input:hover {
 				background: rgba(0,0,0, 0.03);
 			}
 		</style>
 	</head>
+
 	<body>
 		<h2>JollyCards</h2>
-        <h3>Special event eCards, made simple.</h3>
+		<h3>Special event eCards, made simple.</h3>
 		<form onsubmit="return create();">
 			<input id="eventName" placeholder="Event (e.g. Tom's Birthday)" required="">
 			<button id="createEvent">Create</button>
@@ -75,18 +76,16 @@
 		<script>
 			function create() {
 				var eventName = document.getElementById('eventName').value;
-				$.post("/api/event/new", { "eventName": eventName },
-					function(data) {
-						if (data.status == 200) {
-							window.location.href = "/" + data.eventId;
-						} else {
-							alert("Oups! Failed to create new event. Please try again later or contact us at info@jolly.cards");
-						}
+				$.post("/api/event/new", { "eventName": eventName }, function(data) {
+					if (data.status == 200) {
+						window.location.href = "/" + data.eventId;
+					} else {
+						alert("Oups! Failed to create new event. Please try again later or contact us at info@jolly.cards");
 					}
-				);
+				});
 
-                return false;
-            }
+				return false;
+			}
 		</script>
 	</body>
 </html>

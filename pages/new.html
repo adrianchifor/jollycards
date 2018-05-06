@@ -2,17 +2,17 @@
 <html>
 	<head>
 		<title>JollyCards</title>
-        <link rel="icon" href="https://s3-eu-west-1.amazonaws.com/jollycards/favicon.png">
+		<link rel="icon" href="https://s3-eu-west-1.amazonaws.com/jollycards/favicon.png">
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,300" rel="stylesheet" type="text/css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://cdn.rawgit.com/adrianchifor/drawingboard.js/master/dist/drawingboard.min.js"></script>
+		<script src="https://cdn.rawgit.com/adrianchifor/drawingboard.js/master/dist/drawingboard.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-        <link rel="stylesheet" href="https://cdn.rawgit.com/adrianchifor/drawingboard.js/master/dist/drawingboard.min.css">
+		<link rel="stylesheet" href="https://cdn.rawgit.com/adrianchifor/drawingboard.js/master/dist/drawingboard.min.css">
 
 		<style>
 			body {
-                background-image: url("https://s3-eu-west-1.amazonaws.com/jollycards/geometry2.png");
-                background-repeat: repeat;
+				background-image: url("https://s3-eu-west-1.amazonaws.com/jollycards/geometry2.png");
+				background-repeat: repeat;
 				-webkit-font-smoothing: antialiased;
 				-moz-osx-font-smoothing: grayscale;
 				text-align: center;
@@ -41,67 +41,68 @@
 				background: rgba(0,0,0, 0.03);
 			}
 
-            #canvas {
-                height: 70vh;
-                width: 70vw;
-                margin-left: auto;
-                margin-right: auto;
-            }
+			#canvas {
+				height: 70vh;
+				width: 70vw;
+				margin-left: auto;
+				margin-right: auto;
+			}
 		</style>
 	</head>
+
 	<body>
 		<h2><%= event %></h2>
 		<button id="done" onclick="return done();">Done</button>
-        <div id="canvas"></div>
+		<div id="canvas"></div>
 
 		<script>
-            var board = new DrawingBoard.Board('canvas', {
-                controls: [
-                    'Color',
-            		'DrawingMode',
-                    { Size: { type: 'dropdown' } },
-            		'Navigation',
-            		'Download'
-                ]
-            });
+			var board = new DrawingBoard.Board('canvas', {
+				controls: [
+					'Color',
+					'DrawingMode',
+					{ Size: { type: 'dropdown' } },
+					'Navigation',
+					'Download'
+				]
+			});
 
-            function dataURLtoBlob(dataurl) {
-                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+			function dataURLtoBlob(dataurl) {
+				var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+				var bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
 
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
+				while (n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
 
-                return new Blob([u8arr], {type:mime});
-            }
+				return new Blob([u8arr], {type:mime});
+			}
 
-            function done() {
-                var img = board.getImg();
-                var imgBlob = dataURLtoBlob(img);
-                var formData = new FormData();
-                formData.append('image', imgBlob);
+			function done() {
+				var img = board.getImg();
+				var imgBlob = dataURLtoBlob(img);
+				var formData = new FormData();
+				formData.append('image', imgBlob);
 
-                $.ajax({
-                    url: '/api/event/upload/<%= eventId %>',
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        if (result.status == 200) {
-                            window.location.href = "/" + "<%= eventId %>";
-                        } else {
-                            alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
-                        }
-                    },
-                    error: function (error) {
-                        alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
-                    }
-                });
+				$.ajax({
+					url: '/api/event/upload/<%= eventId %>',
+					type: "POST",
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (result) {
+						if (result.status == 200) {
+							window.location.href = "/" + "<%= eventId %>";
+						} else {
+							alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
+						}
+					},
+					error: function (error) {
+						alert("Oups! Failed to add doodle. Please try again later or contact us at info@jolly.cards");
+					}
+				});
 
-                return false;
-            }
+				return false;
+			}
 		</script>
 	</body>
 </html>
