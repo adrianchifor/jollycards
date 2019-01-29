@@ -1,6 +1,8 @@
-# [JollyCards](https://jolly.cards)
+# JollyCards
 
 A free, online alternative to physical birthday/special occasion cards.
+
+<img src="./logo/jollycards.png" width="512">
 
 Stores images in AWS S3 and uses Redis for storing page titles and image names.
 
